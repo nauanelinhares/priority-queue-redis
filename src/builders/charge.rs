@@ -8,7 +8,8 @@ use uuid::Uuid;
 
 pub fn build_charge() -> Charge {
     let mut rng = rand::rng();
-    let payment_status = [PAID, PARTIALLY_PAID, UNPAID].choose(&mut rng).unwrap();
+    let binding = [PAID, PARTIALLY_PAID, UNPAID];
+    let payment_status = binding.choose(&mut rng).unwrap().to_string();
     let id = generate_random_uuid();
     let created_at = Utc::now();
     let updated_at = Utc::now();
@@ -37,7 +38,7 @@ impl ChargeBuilder {
             charge: build_charge(),
         }
     }
-    pub fn with_payment_status(mut self, payment_status: PaymentStatus) -> Self {
+    pub fn with_payment_status(mut self, payment_status: String) -> Self {
         self.charge.payment_status = payment_status;
         self
     }

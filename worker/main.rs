@@ -1,7 +1,11 @@
 use redis;
+use serde_json;
 use std::env;
 use std::thread;
 use std::time::Duration;
+
+// Importar as structs do módulo principal
+use priority_queue_redis::structs::charge::Charge;
 
 fn main() {
     dotenv::dotenv().ok();
@@ -49,7 +53,41 @@ fn main() {
             match redis::cmd("GET").arg(&key).query::<String>(&mut conn) {
                 Ok(charge_json) => {
                     println!("🔑 Processando: {}", key);
-                    println!("📄 Dados: {}", charge_json);
+                    println!("📄 JSON: {}", charge_json);
+
+                    // Deserializar JSON para struct Charge
+                    match serde_json::from_str::<Charge>(&charge_json) {
+                        Ok(charge) => {
+                            println!("✅ Charge deserializada com sucesso!");
+                            println!("🆔 ID: {}", charge.id);
+                            println!("📅 Criada em: {}", charge.created_at);
+                            println!("💰 Status: {}", charge.payment_status);
+                            println!(
+                                "💵 Total pago: {}",
+                                charge.payment_discriminator.total_amount_paid
+                            );
+                            println!(
+                                "🎯 Desconto perdido: {}",
+                                charge.payment_discriminator.lost_discounts_paid
+                            );
+                            println!(
+                                "⚖️ Multa: {}",
+                                charge.payment_discriminator.fine_amount_paid
+                            );
+                            println!(
+                                "📈 Juros: {}",
+                                charge.payment_discriminator.interest_amount_paid
+                            );
+                            println!(
+                                "➕ Adicional: {}",
+                                charge.payment_discriminator.additional_paid
+                            );
+                        }
+                        Err(e) => {
+                            eprintln!("❌ Erro ao deserializar charge: {}", e);
+                            continue;
+                        }
+                    }
 
                     // Remover a charge após processamento
                     match redis::cmd("DEL").arg(&key).query::<i32>(&mut conn) {
