@@ -1,22 +1,32 @@
 mod builders;
+mod handlers;
 mod structs;
 
+use axum::Router;
 use builders::charge::ChargeBuilder;
 use serde_json;
 use std::env;
+use tokio::net::TcpListener;
 
 use crate::{
-    builders::payment_discrimination::PaymentDiscriminationBuilder, structs::charge::UNPAID,
+    builders::payment_discrimination::PaymentDiscriminationBuilder,
+    handlers::{charge::charge_handler, health::health_handler},
+    structs::charge::UNPAID,
 };
 
-fn main() {
+#[tokio::main]
+async fn main() {
     dotenv::dotenv().ok();
+    let app = Router::new()
+        .nest("/health", health_handler())
+        .nest("/charge", charge_handler());
+
+    let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
+
+    axum::serve(listener, app).await.unwrap();
 
     let port = env::var("REDIS_PORT").unwrap();
     let host = env::var("REDIS_HOST").unwrap();
-
-    println!("port: {}", port);
-    println!("host: {}", host);
 
     let client = redis::Client::open(format!("redis://{}:{}", host, port)).unwrap();
 

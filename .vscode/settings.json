@@ -1,0 +1,42 @@
+{
+    // Configurações de autoimport
+    "rust-analyzer.imports.granularity.group": "module",
+    "rust-analyzer.imports.prefix": "crate",
+    "rust-analyzer.assist.importEnforceGranularity": true,
+    "rust-analyzer.assist.importGroup": true,
+    "rust-analyzer.completion.autoimport.enable": true,
+    "rust-analyzer.completion.autoself.enable": true,
+    
+    // Configurações de completação
+    "rust-analyzer.completion.callable.snippets": "fill_arguments",
+    "rust-analyzer.completion.postfix.enable": true,
+    "rust-analyzer.completion.privateEditable.enable": false,
+    
+    // Configurações de hover e ações
+    "rust-analyzer.hover.actions.enable": true,
+    "rust-analyzer.hover.actions.implementations.enable": true,
+    "rust-analyzer.hover.actions.references.enable": true,
+    "rust-analyzer.hover.actions.run.enable": true,
+    "rust-analyzer.hover.actions.typeDefinition.enable": true,
+    
+    // Configurações de lens
+    "rust-analyzer.lens.enable": true,
+    "rust-analyzer.lens.implementations.enable": true,
+    "rust-analyzer.lens.references.enable": true,
+    "rust-analyzer.lens.run.enable": true,
+    "rust-analyzer.lens.typeDefinition.enable": true,
+    
+    // Configurações de formatação
+    "rust-analyzer.rustfmt.overrideCommand": [
+        "rustfmt",
+        "--edition=2021"
+    ],
+    
+    // Configurações de diagnóstico
+    "rust-analyzer.diagnostics.enable": true,
+    "rust-analyzer.diagnostics.enableExperimental": true,
+    
+    // Configurações de proc macro
+    "rust-analyzer.procMacro.enable": true,
+    "rust-analyzer.procMacro.attributes.enable": true
+}
